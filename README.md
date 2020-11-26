@@ -1,0 +1,2 @@
+# Shooting-Ball
+※I am a Japanese, please let me apologize for my poor English. This mini game is created with OpenGL. I have coded it ranging from physics and collision calculation to creating this level. I tried to code physics and collision calculation especially. Please let me know the faults and better means pertain to my source codes . I want to learn various means and hear your input, and then I will make modification as soon as possible.
