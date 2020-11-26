@@ -1,56 +1,56 @@
-#include<PreCompileHeader.h> //ã“ã“ã¾ã§ã‚’ãƒ—ãƒªã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ¸ˆãƒ˜ãƒƒãƒ€ãƒ•ã‚¡ã‚¤ãƒ«ã¨ã™ã‚‹
+#include<PreCompileHeader.h> //‚±‚±‚Ü‚Å‚ğƒvƒŠƒRƒ“ƒpƒCƒ‹Ïƒwƒbƒ_ƒtƒ@ƒCƒ‹‚Æ‚·‚é
 
-#include<thread> //ä¸¦åˆ—å‡¦ç†é–¢é€£
-#include<Application.h> //ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æ“ä½œã‚’è¡Œã†
-#include"GameObjectList.h" //ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¿ç®¡
+#include<thread> //•À—ñˆ—ŠÖ˜A
+#include<Application.h> //ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚Ì‘€ì‚ğs‚¤
+#include"GameObjectList.h" //ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ğ•ÛŠÇ
 
 #pragma comment(lib, "glut32.lib")
 
 using namespace std;
 
 namespace {
-	const double DELTA1 = 5.0; //æ™‚é–“é–“éš”(ms)
+	const double DELTA1 = 5.0; //ŠÔŠÔŠu(ms)
 	const int WINDOW_WIDTH = 720;
 	const int WINDOW_HEIGHT = 720;
 
-	//è‰²ã®ç”¨æ„(R, G, B)
+	//F‚Ì—pˆÓ(R, G, B)
 	float white[] = { 1, 1, 1 };
 	float black[] = { 0, 0, 0 };
 
-	//å…‰æºã®ä½ç½®(x, y, z)ã€å…‰æºãƒ¢ãƒ¼ãƒ‰(0 or 1)
+	//ŒõŒ¹‚ÌˆÊ’u(x, y, z)AŒõŒ¹ƒ‚[ƒh(0 or 1)
 	float light[][4] = {
 		{+0, +0.7, +5, 1},
 	};
 
-	//ãƒã‚¦ã‚¹ã®ON,OFF(OFF = false)
+	//ƒ}ƒEƒX‚ÌON,OFF(OFF = false)
 	bool call = false;
 	int startX = 0, startY = 0, endX = 0, endY = 0;
 
-	//ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ‰±ã†
+	//ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ğˆµ‚¤
 	Application& app = Application::instance();
 }
 
-//æç”»
+//•`‰æ
 void display();
-//ã‚­ãƒ¼å…¥åŠ›å—ä»˜
+//ƒL[“ü—Íó•t
 void KeyboardHandler(unsigned char _setti, int x, int y);
-//ãƒã‚¦ã‚¹ã®ãƒã‚¤ãƒ³ã‚¿åº§æ¨™ã‚’å¾—ã‚‹
+//ƒ}ƒEƒX‚Ìƒ|ƒCƒ“ƒ^À•W‚ğ“¾‚é
 void mouseON(int x, int y);
 void mouseOFF(int x, int y);
-//ã‚¿ã‚¤ãƒãƒ¼
+//ƒ^ƒCƒ}[
 void IncTime(int timer);
-//æ–‡å­—åˆ—æç”»
+//•¶š—ñ•`‰æ
 void drawStr(string str, int x, int y);
-//éšèª¿å€¤ã‚’è¿”ã™
+//ŠK’²’l‚ğ•Ô‚·
 float* Multiply(float* color, float val);
 
 int main(int argc, char** argv) {
-	//ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è¨˜æ†¶
+	//ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚Ì‹L‰¯
 	app._balls.assign(balls, balls + _countof(balls));
 	app._squares.assign(squares, squares + _countof(squares));
 	app._pointAreas.assign(pointAreas, pointAreas + _countof(pointAreas));
 
-	//ã“ã“ã‹ã‚‰openGLã®åˆæœŸåŒ–
+	//‚±‚±‚©‚çopenGL‚Ì‰Šú‰»
 	glutInit(&argc, argv);
 
 	glutInitWindowPosition(0, 0);
@@ -60,16 +60,16 @@ int main(int argc, char** argv) {
 
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 
-	glMatrixMode(GL_PROJECTION);  //ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³
-	glLoadIdentity(); //å˜ä½è¡Œåˆ—
-	gluPerspective(45, 1.0, 1.0, 30.0); //FOVï¼šè¦‹ãˆã‚‹è§’åº¦ã€ã‚¢ã‚¹ãƒšã‚¯ãƒˆæ¯”ã€å‰é¢ã€å¾Œé¢
-	gluLookAt(0, 5, 0, 0, 4, -3, 0, 1, 0); //ç›®ã®ä½ç½®ã€è¦‹ã‚‹ã¨ã“ã‚ã€ä¸Šãƒ™ã‚¯ãƒˆãƒ«
+	glMatrixMode(GL_PROJECTION);  //ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“
+	glLoadIdentity(); //’PˆÊs—ñ
+	gluPerspective(45, 1.0, 1.0, 30.0); //FOVFŒ©‚¦‚éŠp“xAƒAƒXƒyƒNƒg”äA‘O–ÊAŒã–Ê
+	gluLookAt(0, 5, 0, 0, 4, -3, 0, 1, 0); //–Ú‚ÌˆÊ’uAŒ©‚é‚Æ‚±‚ëAãƒxƒNƒgƒ‹
 
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
-	glEnable(GL_DEPTH_TEST); //éš é¢æ¶ˆå»ãƒ¢ãƒ¼ãƒ‰
+	glEnable(GL_DEPTH_TEST); //‰B–ÊÁ‹ƒ‚[ƒh
 
-	//ã“ã“ã‹ã‚‰ãƒ¡ã‚¤ãƒ³å‡¦ç†
+	//‚±‚±‚©‚çƒƒCƒ“ˆ—
 	glutDisplayFunc(display);
 
 	glutTimerFunc(DELTA1, IncTime, 1);
@@ -81,22 +81,22 @@ int main(int argc, char** argv) {
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColor3f(1.0, 1.0, 1.0); //æç”»ã™ã‚‹ã¨ãã®ãƒ™ãƒ¼ã‚¹ã®è‰²
+	glColor3f(1.0, 1.0, 1.0); //•`‰æ‚·‚é‚Æ‚«‚Ìƒx[ƒX‚ÌF
 
 	ostringstream os;
 	os << "Point:" << app._pointSum;
-	drawStr(os.str(), 10, 30); //ãƒã‚¤ãƒ³ãƒˆã®æç”»
+	drawStr(os.str(), 10, 30); //ƒ|ƒCƒ“ƒg‚Ì•`‰æ
 
 	drawStr("Space key: End The Game", 10, 50);
 	drawStr("Other key: Reset Ball", 10, 70);
 	drawStr("Mouse: Shoot The Ball", 10, 90);
 
-	glMatrixMode(GL_MODELVIEW); //ã‚¢ãƒ•ã‚£ãƒ³å¤‰æ›è¡Œåˆ—ãƒ¢ãƒ¼ãƒ‰
-	glLoadIdentity(); //å˜ä½è¡Œåˆ—
+	glMatrixMode(GL_MODELVIEW); //ƒAƒtƒBƒ“•ÏŠ·s—ñƒ‚[ƒh
+	glLoadIdentity(); //’PˆÊs—ñ
 
 	glTranslatef(0, 0, -10);
 
-	//å…‰æºã®è¨­å®š
+	//ŒõŒ¹‚Ìİ’è
 	glLightfv(GL_LIGHT0, GL_POSITION, light[0]);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, Multiply(white, 1.0));
 	glLightfv(GL_LIGHT0, GL_SPECULAR, Multiply(white, 1.0));
@@ -161,7 +161,7 @@ void drawStr(string str, int x, int y) {
 	glPushMatrix();
 	glLoadIdentity();
 
-	// ç”»é¢ä¸Šã«ãƒ†ã‚­ã‚¹ãƒˆæç”»
+	// ‰æ–Êã‚ÉƒeƒLƒXƒg•`‰æ
 	glRasterPos2f(x, y);
 	int size = (int)str.size();
 	for (int i = 0; i < size; ++i) {
